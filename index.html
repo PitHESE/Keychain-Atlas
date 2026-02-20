@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="./src/styles/type.css" />
+  <title>keychain atlas</title>
+
+  <style>
+    :root{
+      --bg:#000;
+      --fg:#fff;
+
+      --key-idle: rgba(180,180,180,.22);
+      --key-on:   rgba(180,180,180,.95);
+
+      --index-bright: .60;
+      --index-sat: .90;
+
+      /* keep in sync with shared topbar */
+      --topbar-h: 56px;
+      --topbar-h-sm: 52px;
+    }
+
+
+    html,body{
+      margin:0; padding:0;
+      height:100%;
+      background:var(--bg);
+      color:var(--fg);
+      overflow:hidden;
+      font-family: var(--font-family, "CXSeagal"), system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    }
+
+    /* ===== TOOL IN BACKGROUND ===== */
+    .toolFrame{
+      position:fixed;
+      inset:0;
+      width:100vw;
+      height:100vh;
+      border:0;
+      z-index:1;
+      background:#000;
+      transition: filter .25s ease, transform .25s ease;
+    }
+    body.entry-on .toolFrame{
+      filter:
+        blur(18px)
+        saturate(var(--index-sat))
+        brightness(var(--index-bright))
+        contrast(1.02);
+      transform: scale(1.03);
+      transform-origin:center;
+    }
+
+    /* dark layer SOLO in index */
+    .toolShade{
+      position:fixed;
+      inset:0;
+      z-index:2;
+      background: rgba(0,0,0,.30);
+      pointer-events:none;
+      opacity:0;
+      visibility:hidden;
+      transition: opacity .25s ease, visibility .25s ease;
+    }
+    body.entry-on .toolShade{
+      opacity:1;
+      visibility:visible;
+    }
+
+    /* overlay sopra */
+    .entryOverlay{
+      position:fixed;
+      inset:0;
+      z-index:1000;
+      pointer-events:auto;
+    }
+
+
+    .wrap{
+      position:fixed;
+      inset:0;
+      display:grid;
+      place-items:center;
+      padding-top: var(--topbar-h);
+      box-sizing: border-box;
+    }
+
+    @media (max-width: 900px){
+      .wrap{ padding-top: var(--topbar-h-sm); }
+    }
+
+    #topbar{
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      z-index:1200;
+      pointer-events:auto;
+    }
+
+
+    /* chiave più grande */
+    svg{
+      width: min(1680px, 98vw);
+      height:auto;
+      display:block;
+      transform: translateY(22px) scale(1.08);
+      transform-origin:center;
+    }
+
+    .keySeg{
+      fill: var(--key-idle);
+      cursor:pointer;
+      transition: fill .12s ease, filter .12s ease;
+      outline:none;
+      stroke: rgba(255,255,255,.10);
+      stroke-width: 1.2;
+      vector-effect: non-scaling-stroke;
+    }
+    .keySeg:hover,
+    .keySeg:focus{
+      fill: var(--key-on);
+      filter: drop-shadow(0 10px 24px rgba(0,0,0,.35));
+    }
+
+ /* ===== labels "poco fuori dal path" ===== */
+.segLabelOut{
+  font-family: inherit;
+  font-weight: 600;              /* Semibold */
+  text-transform: uppercase;
+  fill: rgba(255,255,255,.86);
+  opacity: 0;
+  pointer-events: none;
+  user-select: none;
+  transition: opacity .12s ease;
+
+  /* ✅ tracking più controllabile in SVG */
+  letter-spacing: 0.04em;        /* tracking coerente col type system */
+  font-kerning: normal;
+}
+
+/* ✅ compaiono solo quando hover/focus sulla sezione */
+.seg:hover .segLabelOut,
+.seg:focus-within .segLabelOut{
+  opacity:.95;
+}
+    .seg:hover .segLabelOut{ opacity:.95; }
+
+    @media (prefers-reduced-motion: reduce){
+      .keySeg, .toolFrame, .segLabelOut{ transition:none; }
+    }
+
+    /* Prevent default purple visited links in topbar brand */
+    #brandHome,
+    #brandHome:visited{
+      color: rgba(255,255,255,.92);
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body class="entry-on" data-page="index" data-context="index">
+  <!-- TOOL sotto -->
+  <iframe id="toolFrame" class="toolFrame" src="sandbox.html?embed=1" title="keychain atlas tool"></iframe>
+  <div class="toolShade" aria-hidden="true"></div>
+
+  <!-- OVERLAY sopra -->
+  <div id="entryOverlay" class="entryOverlay">
+    <!-- TOPBAR (shared) -->
+    <div id="topbar" data-topbar></div>
+    <script type="module" src="./src/topbar.js"></script>
+
+    <div class="wrap">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" role="img" aria-label="Key Atlas shape" preserveAspectRatio="xMidYMid meet">
+        <title>Key Atlas shape</title>
+
+        <!-- TL = keychain atlas -->
+        <g class="seg">
+          <path id="segTL" class="keySeg" tabindex="0"
+            data-action="enter-tool"
+            data-label="keychain atlas"
+            data-corner="tl"
+            d="M957,537.5v-213.2h-119.3c-14.1,0-27-8.1-33.1-20.8l-35.4-73.6c-33-68.6-102.3-112.2-178.5-112.2H246.9c-54.6,0-99.4,44.8-99.4,99.4v320.5h809.4ZM341.3,201c51.2,0,92.7,41.5,92.7,92.7s-41.5,92.7-92.7,92.7-92.7-41.5-92.7-92.7,41.5-92.7,92.7-92.7Z"/>
+          <text class="segLabelOut" data-for="segTL" data-side="top" data-align="start" font-size="28">keychain atlas</text>
+        </g>
+
+        <!-- BL = guide -->
+        <g class="seg">
+          <path id="segBL" class="keySeg" tabindex="0"
+            data-href="./guide.html"
+            data-label="guide"
+            data-corner="bl"
+            d="M957,542.5H147.6v320.5c0,27.3,11.2,52.1,29.2,70.1h0c18,18,42.8,29.2,70.1,29.2h345.9c75,0,143.6-42.3,177.1-109.4l34.5-69c6.2-12.4,18.9-20.3,32.9-20.3h119.7v-221.2Z"/>
+          <text class="segLabelOut" data-for="segBL" data-side="bottom" data-align="start" font-size="28">guide</text>
+        </g>
+
+        <!-- TR = about -->
+        <g class="seg">
+          <path id="segTR" class="keySeg" tabindex="0"
+            data-href="./pages.html"
+            data-label="data"
+            data-corner="tr"
+            d="M963,537.5h808.2l-112.2-202.1c-4.6-6.9-12.4-11.1-20.7-11h-49.7c-5.9,0-11.6,2.1-16.2,6l-70.8,60.7-70.9-60.7h0c-9.3-7.9-23.1-8-32.3,0l-70.8,60.7-70.8-60.7c-9.3-8-23-8-32.3,0l-70.8,60.7-70.8-60.7c-4.5-3.9-10.2-5.9-16.2-6h-103.8s0,213.2,0,213.2Z"/>
+          <text class="segLabelOut" data-for="segTR" data-side="top" data-align="end" font-size="28">data</text>
+        </g>
+
+        <!-- BR = pages -->
+        <g class="seg">
+          <path id="segBR" class="keySeg" tabindex="0"
+            data-href="./about.html"
+            data-label="about"
+            data-corner="br"
+            d="M963,542.5v221.2h675.3s0,0,0,0c8.3,0,16.1-4.1,20.7-11l111.9-210h-807.9Z"/>
+          <text class="segLabelOut" data-for="segBR" data-side="bottom" data-align="end" font-size="28">about</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+
+  <script>
+    // posiziona le label “poco fuori dal path”
+    function positionOutsideLabels(){
+      const padX  = 26;  // distanza dal bordo bbox in X
+      const offTop = 18; // quanto “fuori” sopra
+      const offBot = 34; // quanto “fuori” sotto
+
+      document.querySelectorAll(".segLabelOut").forEach(t => {
+        const id = t.dataset.for;
+        const side = t.dataset.side;   // top | bottom
+        const align = t.dataset.align; // start | end
+        const p = document.getElementById(id);
+        if (!p) return;
+
+        const bb = p.getBBox();
+
+        const x = (align === "end")
+          ? (bb.x + bb.width - padX)
+          : (bb.x + padX);
+
+        const y = (side === "bottom")
+          ? (bb.y + bb.height + offBot)
+          : (bb.y - offTop);
+
+        t.setAttribute("x", x);
+        t.setAttribute("y", y);
+        t.setAttribute("text-anchor", align === "end" ? "end" : "start");
+      });
+    }
+
+    function schedulePosition(){
+      requestAnimationFrame(()=>requestAnimationFrame(positionOutsideLabels));
+    }
+
+    window.addEventListener("load", schedulePosition);
+    window.addEventListener("resize", schedulePosition);
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(schedulePosition).catch(()=>{});
+    }
+
+const frame = document.getElementById("toolFrame");
+const entryOverlay = document.getElementById("entryOverlay");
+const shade = document.querySelector(".toolShade");
+
+// Prevent double navigations / race conditions when leaving the page
+let _navLock = false;
+function goTo(href){
+  if (!href || _navLock) return;
+  _navLock = true;
+  deactivateEmbeddedTool();
+  unloadIframe();
+  // Use assign to keep normal navigation semantics
+  window.location.assign(href);
+}
+
+function deactivateEmbeddedTool(){
+  // Best-effort: put the embedded tool back in safe embed mode
+  try{
+    const fn = frame?.contentWindow?.ATLAS_TOOL?.deactivate;
+    if (typeof fn === "function") fn();
+  }catch{}
+}
+
+function unloadIframe(){
+  // If the browser keeps this page in bfcache, drop the heavy iframe contents
+  // to reduce memory spikes when switching pages.
+  try{
+    if (frame) frame.src = "about:blank";
+  }catch{}
+}
+
+function ensureIframe(){
+  // If the iframe was blanked (about:blank), restore it so the key entry can work.
+  try{
+    const src = String(frame?.getAttribute("src") || "");
+    if (!src || src.includes("about:blank")) {
+      frame.setAttribute("src", "sandbox.html?embed=1");
+    }
+  }catch{}
+}
+
+function finishEnter(){
+  document.body.classList.remove("entry-on");
+  entryOverlay.style.display = "none";
+}
+
+function showEntry(){
+  // torna alla schermata index (overlay + blur)
+  document.body.classList.add("entry-on");
+  entryOverlay.style.display = "";
+
+  // rimette l'iframe in modalità embed (sfondo non interattivo)
+  ensureIframe();
+  deactivateEmbeddedTool();
+}
+
+window.ATLAS_INDEX = window.ATLAS_INDEX || {};
+window.ATLAS_INDEX.showEntry = showEntry;
+
+// fallback: se il tool manda un postMessage
+window.addEventListener("message", (e)=>{
+  if (e?.data?.type === "ATLAS_RETURN_TO_INDEX") showEntry();
+});
+
+    function tryActivateTool(){
+      const w = frame?.contentWindow;
+      const fn = w?.ATLAS_TOOL?.activate;
+      if (typeof fn === "function") { fn(); return true; }
+      return false;
+    }
+
+
+    function enterTool(){
+      ensureIframe();
+      if (tryActivateTool()){
+        finishEnter();
+        return;
+      }
+      let n = 0;
+      const t = setInterval(()=>{
+        if (tryActivateTool()){
+          clearInterval(t);
+          finishEnter();
+          return;
+        }
+        if (++n > 80){
+          clearInterval(t);
+          window.location.href = "sandbox.html";
+        }
+      }, 100);
+    }
+
+    document.querySelectorAll(".keySeg").forEach(seg => {
+      const href   = seg.dataset.href;
+      const action = seg.dataset.action;
+
+      seg.addEventListener("click", () => {
+        if (action === "enter-tool") { enterTool(); return; }
+        if (href) {
+          goTo(href);
+        }
+      });
+
+      seg.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          if (action === "enter-tool") { enterTool(); return; }
+          if (href) {
+            goTo(href);
+          }
+        }
+      });
+    });
+
+    window.addEventListener("pagehide", ()=>{ deactivateEmbeddedTool(); unloadIframe(); }, { capture:true });
+  </script>
+</body>
+</html>

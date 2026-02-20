@@ -1,0 +1,703 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>keychain atlas · pages</title>
+  <link rel="stylesheet" href="./src/styles/type.css" />
+
+  <style>
+    :root{
+      --bg:#000;
+      --fg:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.72);
+      --muted2:rgba(255,255,255,.55);
+      --line:rgba(255,255,255,.14);
+
+      --glass: rgba(0,0,0,.42);
+      --glass2: rgba(0,0,0,.62);
+
+      --pad:18px;
+      --topbar-h:64px;
+      --ui:13px;
+      --caps:.14em;
+      --ls-caps: var(--caps);
+
+      --gap:14px;
+      --font-ui: "CXSeagal", system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      --font-ui-bold: "CXSeagal", system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      
+      --schema-kicker: 16px;   /* Insights / Line */
+      --schema-title:  19px;   /* Distribuzione / parametro */
+      --schema-meta:   16px;   /* chips / meta */
+      --schema-body:   14px;   /* insight text (match about) */
+      --schema-svg:    16px;   /* text inside SVG charts */
+      --schema-lineh:  1.6;    /* insight line-height (match about) */
+      --block-pad: 12px;       /* unified inner padding for cards/wraps */
+    }
+
+    
+    html,body{
+      margin:0; padding:0;
+      height:100%;
+      background:var(--bg);
+      color:var(--fg);
+      font-family: var(--font-ui) !important;
+      font-weight: 400;
+      overflow:hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: geometricPrecision;
+    }
+
+    button,
+    input,
+    select,
+    textarea{
+      font-family: var(--font-ui);
+    }
+
+    a{ color:inherit; text-decoration:none; }
+
+    .topbar{
+      position:fixed;
+      top:0; left:0; right:0;
+      height:var(--topbar-h);
+      z-index:50;
+      display:flex;
+      align-items:center;
+      gap:18px;
+      padding:0 var(--pad);
+      background:linear-gradient(to bottom, rgba(0,0,0,.55), rgba(0,0,0,0));
+      pointer-events:auto;
+      font-size: var(--ui);
+    }
+
+    .miniBrand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      white-space:nowrap;
+      letter-spacing: 0.04em;
+      opacity:.96;
+      user-select:none;
+    }
+    .miniBrand b{ font-weight:600; }
+    .miniBrand a{
+      color:inherit;
+      text-decoration:none;
+      font-weight:600;
+    }
+    #brandHome{
+      cursor:pointer;
+    }
+    #brandHome:hover{
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      opacity: 1;
+    }
+    .miniBrand .sep{ opacity:.55; }
+    .miniBrand .meta{ opacity:.72; }
+
+    .centerTools{
+      flex:1;
+      display:flex;
+      justify-content:center;
+      gap:10px;
+      min-width: 320px;
+      align-items:center;
+    }
+    .rightTools{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      white-space:nowrap;
+    }
+    .sepDot{ opacity:.55; }
+
+    .pill{
+      appearance:none;
+      border:1px solid transparent;
+      background:transparent;
+      color: rgba(255,255,255,.78);
+      font: inherit;
+      padding:7px 12px;
+      border-radius:999px;
+      cursor:pointer;
+      transition: background .12s ease, border-color .12s ease, color .12s ease, transform .12s ease;
+      user-select:none;
+    }
+    .pill:hover{
+      background: rgba(255,255,255,.06);
+      border-color: rgba(255,255,255,.10);
+      color: rgba(255,255,255,.92);
+    }
+    .pill:active{ transform: translateY(1px); }
+    .pill.active{
+      background: rgba(255,255,255,.10);
+      border-color: rgba(255,255,255,.18);
+      color: rgba(255,255,255,.95);
+    }
+
+    body[data-context="pages"] .paramControl{
+      position: fixed;
+      top: 0;
+      left: 50%;
+      height: var(--topbar-h);
+      display: flex;
+      align-items: center;
+      z-index: 120;
+      pointer-events: auto;
+      font-size: var(--ui);
+    }
+
+body[data-context="pages"] .paramControl .pill{
+  padding: 7px 12px; /* identico feeling dei pill della topbar */
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.14);
+  color: rgba(255,255,255,.92);
+  box-shadow: 0 12px 36px rgba(0,0,0,.22);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+body[data-context="pages"] .paramControl .pill:hover{
+  background: rgba(255,255,255,.11);
+  border-color: rgba(255,255,255,.18);
+}
+
+    .dropdown{
+  position:fixed;
+  top: calc(var(--topbar-h) - 6px);
+  left: 0; /* will be overridden by pages.js positioning */
+
+  z-index:80;
+  width: 260px;
+  max-width: min(820px, calc(100vw - 28px));
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:14px;
+  background: rgba(0,0,0,.55);
+  box-shadow: 0 18px 60px rgba(0,0,0,.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  overflow:hidden;
+  display:none;
+  pointer-events: auto;
+}
+    .dropdown.open{ display:block; }
+
+    .ddHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:9px 12px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      color: rgba(255,255,255,.86);
+    }
+    .ddHead .k{
+      letter-spacing: var(--ls-caps, var(--caps));
+      text-transform: uppercase;
+      opacity:.85;
+      font-size: 12px;
+    }
+    .ddHead .hint{
+      color: rgba(255,255,255,.55);
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      max-width: 60%;
+      font-size: 12px;
+    }
+    .ddList{
+      max-height: 300px;
+      overflow:auto;
+      padding:6px 0;
+    }
+    .ddItem{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:9px 12px;
+      font-size: 13px;
+      cursor:pointer;
+      user-select:none;
+      border-top:1px solid rgba(255,255,255,.05);
+      color: rgba(255,255,255,.86);
+      white-space: nowrap;
+      transition: background .12s ease;
+    }
+    .ddItem:first-child{ border-top:none; }
+    .ddItem:hover{ background: rgba(255,255,255,.06); }
+    .ddItem.active{ background: rgba(255,255,255,.08); }
+
+    body[data-context="pages"] .dropdown{
+      border-radius:16px;
+    }
+    body[data-context="pages"] .ddHead .k{
+      font-size: 11px;
+    }
+    body[data-context="pages"] .ddHead .hint{
+      font-size: 11px;
+    }
+
+    .workspace{
+      position:fixed;
+      top: var(--topbar-h);
+      left:0; right:0; bottom:0;
+      display:grid;
+      grid-template-columns: 1fr 1fr; /* 50/50 */
+      gap:0;
+    }
+    
+    .gridPane{
+      height:100%;
+      overflow:hidden;
+      padding: var(--pad);
+      box-sizing:border-box;
+      border-right: 1px solid rgba(255,255,255,.08);
+    }
+    
+    .mosaic{
+      width:100%;
+      height:100%;
+      display:grid;
+      gap: var(--gap);
+      align-content: start;
+    }
+    
+    .tile{
+      position:relative;
+      border-radius:16px;
+      overflow:hidden;
+      background: rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.10);
+      cursor:pointer;
+      aspect-ratio: 1 / 1;
+      min-width:0;
+      min-height:0;
+    }
+
+    .tile img{
+      width:100%;
+      height:100%;
+      display:block;
+      object-fit:cover;
+      filter: contrast(1.02) saturate(1.02);
+    }
+
+    .tile .fallback{
+      position:absolute;
+      inset:0;
+      display:grid;
+      place-items:center;
+      color: rgba(255,255,255,.62);
+      letter-spacing: var(--ls-caps, var(--caps));
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+
+    .tag{
+      position:absolute;
+      left:10px;
+      bottom:10px;
+      padding:7px 10px;
+      border-radius:999px;
+      background: rgba(0,0,0,.45);
+      border: 1px solid rgba(255,255,255,.14);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: rgba(255,255,255,.88);
+      font-size: 12px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: calc(100% - 20px);
+      pointer-events:none;
+    }
+
+    .schemaPane{
+      height:100%;
+      overflow:hidden;
+      padding: var(--pad);
+      box-sizing:border-box;
+    }
+
+    .schemaPanel{
+      height:100%;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(10,10,10,.68);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 18px 70px rgba(0,0,0,.55);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      min-height:0;
+    }
+
+    .schemaHead{
+      padding:12px 12px 10px 12px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      user-select:none;
+    }
+    .schemaKicker{
+      font-size:12px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.70);
+    }
+    .schemaTitle{
+  margin-top:6px;
+  font-size: var(--schema-title);
+  letter-spacing: 0.0em;
+  text-transform: none;
+  color: rgba(255,255,255,.92);
+  line-height: 1.35;
+}
+    .schemaBtns{
+      display:flex; gap:8px; align-items:center;
+    }
+    .iconBtn{
+      width:42px; height:42px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      transition: background .12s ease, transform .12s ease;
+    }
+    .iconBtn:hover{ background: rgba(255,255,255,.10); }
+    .iconBtn:active{ transform: translateY(1px); }
+
+    .schemaBody{
+      padding:12px;
+      overflow:auto;
+      min-height:0;
+    }
+
+    .schemaMeta{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:12px;
+      color: rgba(255,255,255,.70);
+      font-size: 12px;
+    }
+    .chip{
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .schemaSvgWrap{
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      padding: var(--block-pad);
+      /* keep SVG un-clipped */
+      overflow: visible;
+      display:flex;
+      justify-content:stretch;
+      align-items:flex-start;
+    }
+    /* same spacing between Insights -> Distribuzione as Distribuzione -> Line */
+    .schemaBody > .schemaSvgWrap{
+      margin-top: 12px;
+    }
+    svg{ display:block; }
+
+    /* Make Distribution + Line occupy the same width and scale identically */
+    #schemaSvg,
+    #lineSvg{
+      width: 100%;
+      height: auto;
+      max-width: 100%;
+    }
+
+    .chartsBlock{
+      margin-top: 12px;
+      display: grid;
+      gap: 12px;
+    }
+    .chartCard{
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      padding: var(--block-pad);
+      overflow:hidden;
+    }
+    
+    .chartCard{
+      display: block;
+    }
+    .chartHead{
+      /* allineata allo stile dei titoli “ENCODING: …” */
+      font-size: var(--schema-kicker);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.70);
+      margin: 0 0 10px 0px;
+      line-height: 1.25;
+      opacity: .92;
+    }
+    /* Insights: inset a sinistra per allineare titolo + testo */
+.chartCardInsights .chartHead{
+  padding-left: 22px;
+}
+
+.chartCardInsights #insights{
+  padding-left: 22px;
+  padding-right: 10px;
+}
+    .chartSvg{
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    #lineSvg{
+      height: auto !important;
+    }
+    #lineNote{ display:none !important; }
+    #schemaNote{ display:none !important; }
+
+    .insights .iLead{
+  margin: 0 0 12px 0;
+  opacity: .92;
+
+  font-size: 16px;
+  line-height: 1.34;
+
+  font-family: var(--font-ui);
+  font-weight: 400;
+
+  color: rgba(255,255,255,.82);
+  font-synthesis: none;
+}
+    .insights .iList{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .insights .iItem{
+      padding:10px 10px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+    }
+    .insights .iTop{
+      display:flex;
+      align-items:baseline;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:6px;
+    }
+    .insights .iName{
+      color: rgba(255,255,255,.88);
+      font-size: 12px;
+      letter-spacing: var(--ls-caps, var(--caps));
+      text-transform: uppercase;
+      line-height: 1.35;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      max-width: 75%;
+    }
+    .insights .iCount{
+      font-variant-numeric: tabular-nums;
+      color: rgba(255,255,255,.70);
+      font-size: 12px;
+      white-space:nowrap;
+    }
+    .insights .iBody{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px 10px;
+      color: rgba(255,255,255,.62);
+      font-size: 12px;
+    }
+    .insights .pillMini{
+      padding:6px 9px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(0,0,0,.18);
+      font-variant-numeric: tabular-nums;
+      white-space:nowrap;
+      max-width:100%;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .schemaNote{
+      margin-top:12px;
+      color: rgba(255,255,255,.72);
+      font-size: 12px;
+      line-height: var(--schema-lineh);
+    }
+    #schemaMeta, .schemaMeta{ font-size: var(--schema-meta); }
+    .chip{ font-size: var(--schema-meta); }
+
+    #schemaSvg text,
+#lineSvg text{
+  font-family: var(--font-ui-bold) !important;
+  font-weight: 600 !important;
+  font-size: var(--schema-svg) !important;
+  letter-spacing: 0 !important;
+  font-synthesis: none;
+}
+
+
+    body[data-context="pages"] .chartHead{
+  font-family: var(--font-ui-bold) !important;
+  font-weight: 600 !important;
+  font-synthesis: none;
+}
+
+    body[data-context="pages"] h1,
+    body[data-context="pages"] h2,
+    body[data-context="pages"] h3,
+    body[data-context="pages"] h4,
+    body[data-context="pages"] h5,
+    body[data-context="pages"] h6,
+    body[data-context="pages"] .pageTitle,
+    body[data-context="pages"] .paneTitle,
+    body[data-context="pages"] .leftTitle,
+    body[data-context="pages"] .gridTitle,
+    body[data-context="pages"] #gridTitle{
+      font-family: var(--font-ui-bold) !important;
+      font-weight: 600 !important;
+      font-synthesis: none;
+    }
+    
+    body[data-context="pages"] b,
+    body[data-context="pages"] strong{
+      font-weight: 600 !important;
+      font-synthesis: none;
+    }
+    
+    .schemaBody{ font-weight: 400; }
+    .schemaBody *{ font-weight: inherit; }
+    
+    .schemaTitle,
+    .schemaKicker,
+    .chartHead,
+    .ddHead .k,
+    .pill,
+    .miniBrand b,
+    .miniBrand a{
+      font-family: var(--font-ui-bold);
+      font-weight: 600;
+    }
+    
+    #insights,
+    .insights{
+      font-weight: 600;
+    }
+    .insights .iLead{
+      font-weight: 400;
+      font-family: var(--font-ui);
+    }
+    .insights .iBody,
+    .insights .pillMini,
+    .insights .iName,
+    .insights .iCount,
+    .insights b{
+      font-weight: 600;
+    }
+    
+    #lineSvg .axis text,
+    #lineSvg .tick text{
+      font-size: var(--schema-svg) !important;
+    }
+    
+    .schemaHead{ padding: 14px 12px 12px 12px; }
+  </style>
+</head>
+
+<body data-context="pages">
+  <header id="topbar" class="topbar" aria-label="top bar"></header>
+  <div class="paramControl" aria-label="parametro">
+    <button id="btnParam" class="pill" type="button">Parametro: Tipologia</button>
+  </div>
+
+  <div id="ddParam" class="dropdown" aria-hidden="true">
+    <div class="ddHead">
+      <div class="k">Parametro</div>
+      <div id="ddHint" class="hint">Seleziona una dimensione</div>
+    </div>
+    <div id="ddList" class="ddList"></div>
+  </div>
+
+  <main class="workspace">
+    <section id="gridPane" class="gridPane">
+      <div id="gridRoot" class="mosaic" aria-label="Pages grid"></div>
+    </section>
+
+    <aside class="schemaPane">
+      <div class="schemaPanel">
+        <div class="schemaHead">
+          <div>
+            <div id="schemaTitle" class="schemaTitle">Distribuzione</div>
+          </div>
+          <div class="schemaBtns"></div>
+        </div>
+
+        <div class="schemaBody">
+          <div id="schemaMeta" class="schemaMeta"></div>
+
+          <div class="chartCard chartCardInsights">
+            <div class="chartHead">Insights</div>
+            <div id="insights" class="insights" aria-label="Insights">
+              <div class="iLead">
+                Qui i dati diventano una piccola storia. A sinistra la collezione appare come <b>mosaico completo</b>; a destra la stessa collezione viene letta attraverso il parametro selezionato.
+                Quando il parametro cambia, cambiano anche ritmo e gerarchie: alcuni gruppi emergono (più frequenti), altri restano in controluce (più rari), e la distribuzione si ridisegna nei grafici.
+              </div>
+
+              <div class="iList" id="insightsList">
+                <div class="iItem">
+                  <div class="iTop">
+                    <div class="iName">In attesa di un parametro</div>
+                    <div class="iCount">—</div>
+                  </div>
+                  <div class="iBody">
+                    <span class="pillMini">Selezionare una dimensione (Tipologia, Materiale, Colore…)</span>
+                    <span class="pillMini">La griglia si riordina e i grafici aggiornano la distribuzione</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="schemaSvgWrap">
+            <svg id="schemaSvg" viewBox="0 0 560 260" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Schema"></svg>
+          </div>
+
+          <div class="chartsBlock" aria-label="Extra charts">
+            <div class="chartCard">
+              <div class="chartHead" id="lineHead">Line</div>
+              <div id="lineNote" class="schemaNote"></div>
+              <svg id="lineSvg" class="chartSvg" viewBox="0 0 560 260" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Line chart"></svg>
+            </div>
+          </div>
+
+          <div class="schemaNote" id="schemaNote"></div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <script type="module" src="./src/topbar.js"></script>
+  <script type="module" src="./src/charts/line.js"></script>
+  <script type="module" src="./src/pages.js"></script>
+</body>
+</html>

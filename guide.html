@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>keychain atlas · guida</title>
+  <link rel="stylesheet" href="./src/styles/type.css" />
+
+  <style>
+    :root{
+      --bg:#000;
+
+      --fg:  rgba(255,255,255,.74);
+      --fg2: rgba(255,255,255,.70); /* headings / caps a bit brighter */
+      --fg3: rgba(255,255,255,.42);
+
+      --pad: 18px;
+      --maxW: 1560px;
+
+      /* ↑ testo più grande, ↓ interlinea */
+      --tSmall: 16px;
+      --tBody:  16px;
+      --lh:     1.32;
+
+      --trackCaps: .04em;
+
+      /* indent calcolato via JS per allineare al punto di inizio della .meta */
+      --metaIndent: 0px;
+
+    }
+
+    html,body{
+      margin:0; padding:0;
+      height:100%;
+      background:var(--bg);
+      color:var(--fg);
+      font-family:"CXSeagal", system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      font-weight:400;
+      overflow-x:hidden;
+      overflow-y:auto;
+
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: geometricPrecision;
+    }
+
+    a{ color:inherit; text-decoration:none; }
+    a:hover{ color: rgba(255,255,255,.88); }
+
+    /* ===== PAGE WRAP ===== */
+    .page{
+      max-width: var(--maxW);
+      margin: 0 auto;
+      padding: calc(var(--topbar-h, 64px) + var(--topbar-offset, 28px) + 18px) var(--pad) 90px;
+      box-sizing:border-box;
+    }
+
+    /* ✅ contenuto allineato ORIZZONTALMENTE alla .meta della top bar */
+    .pageGrid{
+      padding-left: var(--metaIndent);
+      box-sizing:border-box;
+    }
+
+
+    /* ===== HEADER ROW (come genera: sx page name, dx brand) ===== */
+    .hdr{
+      display:grid;
+      grid-template-columns: minmax(320px, 520px) minmax(320px, 520px);
+      justify-content: space-between;
+      column-gap: clamp(60px, 12vw, 240px);
+      align-items:start;
+      margin-bottom: 26px;
+    }
+    .hdrLeft, .hdrRight{
+      font-size: var(--tSmall);
+      letter-spacing: var(--trackCaps);
+      text-transform: uppercase;
+      color: var(--fg2);
+      line-height: 1.15;
+      font-weight:600;
+    }
+    .hdrRight{ text-align:right; }
+
+    /* ===== TOP ROW (due colonne, blocchi piccoli) ===== */
+    .topRow{
+      display:grid;
+      grid-template-columns: minmax(320px, 520px) minmax(320px, 520px);
+      justify-content: space-between;
+      column-gap: clamp(60px, 12vw, 240px);
+      align-items:start;
+    }
+
+    .block{ margin: 0 0 26px; }
+
+    .h{
+      font-size: var(--tSmall);
+      letter-spacing: var(--trackCaps);
+      text-transform: uppercase;
+      color: var(--fg2);
+      margin: 0 0 10px;
+      line-height: 1.15;
+      font-weight:600;
+    }
+
+    .p{
+      margin:0;
+      font-size: var(--tBody);
+      line-height: var(--lh);
+      letter-spacing: 0; /* body senza tracking */
+      color: var(--fg);
+      font-weight:400;
+    }
+
+    /* slightly brighter emphasis (e.g., Movimento / Zoom / Filtri) */
+    .p b,
+    .list b,
+    .long p b{
+      color: rgba(255,255,255,.88);
+      font-weight:600;
+    }
+
+    .list{
+      list-style:none;
+      padding:0;
+      margin:0;
+      font-size: var(--tBody);
+      line-height: var(--lh);
+      letter-spacing: 0;
+      color: var(--fg);
+      font-weight:400;
+    }
+    .list li{ margin: 2px 0; }
+
+    /* ===== BOTTOM ROW (testo lungo a sinistra) ===== */
+    .bottomRow{
+      margin-top: clamp(44px, 9vh, 86px);
+      display:grid;
+      grid-template-columns: minmax(320px, 720px) 1fr;
+      column-gap: clamp(60px, 12vw, 240px);
+      align-items:start;
+    }
+
+    .long p{
+      margin: 0 0 10px;
+      font-size: var(--tBody);
+      line-height: 1.34;
+      letter-spacing: 0;
+      color: rgba(255,255,255,.70);
+      font-weight:400;
+    }
+
+    /* ===== FOOTER (come genera: 3 colonne) ===== */
+    .footer{
+      position:fixed;
+      left:0; right:0;
+      bottom:14px;
+      padding: 0 var(--pad);
+      pointer-events:none;
+      font-size:12px;
+      line-height:1.25;
+      color: var(--fg3);
+    }
+    .footer .inner{
+      max-width: var(--maxW);
+      margin: 0 auto;
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      align-items:end;
+    }
+    .footer .c{ text-align:center; }
+    .footer .r{ text-align:right; }
+
+    @media (max-width: 900px){
+      .pageGrid{ padding-left: 0px; } /* su mobile niente indent */
+      .hdr, .topRow, .bottomRow{ grid-template-columns: 1fr; }
+      .hdrRight{ text-align:left; margin-top: 6px; }
+      .footer{ position: static; margin-top: 44px; pointer-events:auto; }
+      .footer .inner{ grid-template-columns: 1fr; gap: 8px; }
+      .footer .c, .footer .r{ text-align:left; }
+      .brandLink{ width: 95vw; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="topbar" id="topbar"></div>
+
+  <main class="page">
+    <!-- ✅ tutto ciò che segue è “agganciato” orizzontalmente alla .meta -->
+    <div class="pageGrid">
+
+      <!-- header row (1:1 genera) -->
+      <div class="hdr">
+        <div class="hdrLeft">guida</div>
+        <div class="hdrRight">keychain atlas</div>
+      </div>
+
+      <!-- top row -->
+      <section class="topRow">
+        <!-- sinistra -->
+        <div>
+          <div class="block">
+            <div class="h">Guida rapida</div>
+            <p class="p">
+              Questa pagina ti aiuta a orientarti in <b>Keychain Atlas</b> e a leggere la collezione attraverso spazio,
+              filtri, zoom e visualizzazioni.
+            </p>
+          </div>
+
+          <div class="block">
+            <div class="h">Logica dell’interfaccia</div>
+            <p class="p">
+              La collezione si esplora come uno <b>spazio interattivo</b>: le card fluttuano nell’ambiente e puoi muoverti
+              liberamente. I dettagli emergono progressivamente con lo zoom.
+            </p>
+          </div>
+        </div>
+
+        <!-- destra -->
+        <div>
+          <div class="block">
+            <div class="h">Filtri</div>
+            <p class="p">
+              I filtri non portano altrove: riorganizzano gli stessi contenuti in una <b>griglia più ordinata</b>,
+              mantenendo continuità e orientamento.
+            </p>
+          </div>
+
+          <div class="block">
+            <div class="h">Dettaglio</div>
+            <ul class="list">
+              <li><b>Zoom-in</b>: compaiono tag e specifiche</li>
+              <li><b>Click</b>: apri la scheda prodotto</li>
+              <li><b>Zoom-out</b>: ritorni alla panoramica completa</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- bottom row -->
+      <section class="bottomRow">
+        <div class="long">
+          <div class="h">Comandi di navigazione</div>
+
+          <p>
+            <b>Movimento</b>: trascina tenendo premuto (mouse) o con lo swipe (trackpad/touch) per spostarti nello spazio.
+            Rilasciando, la vista mantiene una leggera inerzia e poi si stabilizza.
+          </p>
+
+          <p>
+            <b>Zoom</b>: usa la rotella del mouse o il pinch sul trackpad. Avvicinandoti, l’interfaccia rivela prima i tag,
+            poi le specifiche; allontanandoti, torni a leggere la collezione come insieme.
+          </p>
+
+          <p>
+            <b>Filtri</b>: selezionando un parametro, le immagini si riallineano in griglia per confronti rapidi.
+            Il contenuto resta lo stesso: cambia solo l’ordine e la leggibilità.
+          </p>
+
+          <p>
+            <b>Scheda prodotto</b>: clicca su una card per aprire la vista di dettaglio. Da lì puoi scorrere tra i portachiavi
+            correlati e tornare allo spazio senza perdere il contesto.
+          </p>
+        </div>
+
+        <div></div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- footer stile genera -->
+  <footer class="footer" aria-hidden="true">
+    <div class="inner">
+      <div class="l">ISIA U · Design dell’Interfaccia II · 2025–2026</div>
+      <div class="c"></div>
+      <div class="r">guide · keychain atlas</div>
+    </div>
+  </footer>
+
+  <script type="module" src="./src/topbar.js"></script>
+  <script>
+  function syncMetaIndent(){
+    // su mobile lasciamo indent = 0 per evitare layout strani
+    if (window.matchMedia && window.matchMedia("(max-width: 900px)").matches) {
+      document.documentElement.style.setProperty("--metaIndent", "0px");
+      return;
+    }
+
+    const page = document.querySelector(".page");
+    // ✅ ancora l’allineamento al brand della topbar (uguale su tutte le pagine)
+    const anchor =
+      document.querySelector(".topbar #brandHome") ||
+      document.querySelector(".topbar .miniBrand .meta") ||
+      document.querySelector(".topbar .meta");
+
+    if (!page || !anchor) return;
+
+    const pageRect = page.getBoundingClientRect();
+    const anchorRect = anchor.getBoundingClientRect();
+
+    // ✅ il contenuto parte DOPO il padding della .page
+    const st = getComputedStyle(page);
+    const padL = parseFloat(st.paddingLeft) || 0;
+    const pageContentLeft = pageRect.left + padL;
+
+    const indent = Math.max(0, Math.round(anchorRect.left - pageContentLeft));
+    document.documentElement.style.setProperty("--metaIndent", indent + "px");
+  }
+
+  window.addEventListener("load", syncMetaIndent);
+  window.addEventListener("resize", syncMetaIndent);
+  if (document.fonts?.ready) {
+    document.fonts.ready.then(syncMetaIndent).catch(()=>{});
+  }
+</script>
+</body>
+</html>

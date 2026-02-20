@@ -1,0 +1,153 @@
+/* src/styles/type.css
+   SINGLE SOURCE OF TRUTH — ONLY CX Seagal Roman + Semibold
+*/
+
+/* ===== FONT FACES (root: /fonts) ===== */
+@font-face{
+  font-family: "CXSeagal";
+  src: url("../../fonts/CX-Seagal-Roman.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face{
+  font-family: "CXSeagal";
+  src: url("../../fonts/CX-Seagal-Semibold.otf") format("opentype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ===== TOKENS ===== */
+:root{
+  /* family */
+  --font-family: "CXSeagal";
+
+  /* weights */
+  --fw-roman: 400;
+  --fw-semi: 600;
+
+  /* size scale (coerente su tutto il sito) */
+  --fs-xs: 11px;
+  --fs-sm: 12px;
+  --fs-md: 13px;
+  --fs-lg: 14px;
+  --fs-xl: 16px;
+  --fs-2xl: 18px;
+
+  /* line-heights */
+  --lh-tight: 1.15;
+  --lh-body:  1.55;
+  --lh-ui:    1.25;
+
+  /* tracking */
+  --trk-0: 0;
+  --trk-ui: .02em;
+  --trk-kicker: .04em;        /* default tighter headings/kickers */
+  --trk-kicker-wide: .14em;   /* keep wide option if needed */
+
+  /* “semantic defaults” (così non usi più var random in giro) */
+  --type-ui: var(--fs-md) !important;
+  --type-body: var(--fs-lg) !important;
+  --type-kicker: var(--fs-sm) !important;
+
+  /* se in alcuni file esiste ancora --topbar-font o simili: li “normalizzi” qui */
+  --topbar-font: var(--type-ui) !important;
+  --ui-font: var(--type-ui) !important;
+  --ui-font-sm: var(--fs-sm) !important;
+  --ui-font-lg: var(--fs-lg) !important;
+}
+
+/* ===== GLOBAL RESET / ENFORCE ===== */
+html, body{
+  font-family: var(--font-family), system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  font-weight: var(--fw-roman);
+  font-size: var(--type-ui);
+  line-height: var(--lh-ui);
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*{
+  font-family: inherit;
+}
+
+/* Form controls: niente font “a caso” */
+button, input, textarea, select{
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+}
+
+/* SVG text (etichette nelle chiavi / grafici): forza Seagal */
+svg text{
+  font-family: var(--font-family), system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+}
+
+/* ===== TYPO UTILS (usale dove serve, senza inventarti font-size random) ===== */
+.t-roman{ font-weight: var(--fw-roman); }
+.t-semi{  font-weight: var(--fw-semi);  }
+
+.t-xs{ font-size: var(--fs-xs); }
+.t-sm{ font-size: var(--fs-sm); }
+.t-md{ font-size: var(--fs-md); }
+.t-lg{ font-size: var(--fs-lg); }
+.t-xl{ font-size: var(--fs-xl); }
+.t-2xl{ font-size: var(--fs-2xl); }
+
+.lh-tight{ line-height: var(--lh-tight); }
+.lh-body{  line-height: var(--lh-body);  }
+.lh-ui{    line-height: var(--lh-ui);    }
+
+.kicker{
+  font-size: var(--type-kicker);
+  font-weight: var(--fw-semi);
+  letter-spacing: var(--trk-kicker);
+  text-transform: uppercase;
+  line-height: var(--lh-tight);
+}
+
+.bodyText{
+  font-size: var(--type-body);
+  font-weight: var(--fw-roman);
+  line-height: var(--lh-body);
+}
+
+/* ===== “SAFE DEFAULTS” PER TOPBAR / UI LABELS ===== */
+/* Se la topbar ha classi diverse nelle pagine: va bene comunque,
+   perché qui settiamo la “base” coerente. */
+.topbar,
+[data-topbar],
+.miniBrand,
+.filters,
+.righttools{
+  font-size: var(--type-ui);
+  line-height: var(--lh-ui);
+  letter-spacing: var(--trk-ui);
+  font-weight: var(--fw-roman);
+}
+
+/* Brand leggermente più “presente” ma stessa size */
+.topbar b,
+.miniBrand b{
+  font-weight: var(--fw-semi);
+}
+
+/* Pulsanti: coerenti */
+.btn, .fbtn, .aboutLink{
+  font-weight: var(--fw-roman);
+  letter-spacing: var(--trk-ui);
+}
+
+/* ===== HARD LOCK: se qualche pagina forza font-size diverso, vinciamo noi ===== */
+.topbar{
+  font-size: var(--type-ui) !important;
+  line-height: var(--lh-ui) !important;
+}
+.topbar *{
+  font-size: inherit;
+  line-height: inherit;
+}
